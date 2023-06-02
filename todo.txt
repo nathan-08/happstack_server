@@ -1,0 +1,3 @@
+[ ] move css/js to external files
+[ ] upload to github
+[ ] react app frontend
