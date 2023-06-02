@@ -46,11 +46,11 @@ template title body = toResponse $
       css
       H.title . toHtml $ title
     H.body $ do
-      H.table $ do
+      H.table ! A.id "nav-bar" $ do
         H.tr $ do
           H.td $ a ! href "/" $ "home"
           H.td $ a ! href "/form" $ "create animal"
-          H.td $ a ! href "/react-app" $ "react app"
+          H.td $ ""
       body
 
 insert_animal :: Connection -> String -> String -> IO (Maybe ())
@@ -148,5 +148,6 @@ css =
       , "#menu form { display: inline; margin-left: 1em; }"
       , "#animal-table, #animal-table th, #animal-table td { border: 1px solid #aaa; }"
       , "td { min-width: 100px; }"
+      , "#nav-bar { background: #eee; padding: 8px; }"
       ]
   in H.style ! A.type_ "text/css" $ H.toHtml s
