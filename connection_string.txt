@@ -1,0 +1,1 @@
+postgres://grdiosfpibhlts:be22c4bf0999f58b1154e8c39365012f7616bd3ce8871a12484a74619beb7574@ec2-44-213-228-107.compute-1.amazonaws.com:5432/d8vcka443bst5g?sslmode=require

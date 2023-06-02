@@ -1,3 +1,4 @@
+[ ] use docker
 [ ] move css/js to external files
-[ ] upload to github
-[ ] react app frontend
+[x] get nginx working
+[x] upload to github
