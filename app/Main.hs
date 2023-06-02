@@ -32,10 +32,12 @@ main = do
 
 myApp :: Connection -> ServerPart Response
 myApp conn = msum
-  [ dir "echo"   $ echo
-  , dir "form"   $ formPage conn
-  , dir "delete" $ deletePage conn
+  [ dir "echo"      $ echo
+  , dir "math"      $ math
+  , dir "form"      $ formPage conn
+  , dir "delete"    $ deletePage conn
   , dir "react-app" $ serveFile (guessContentTypeM mimeTypes) "frontend/public/index.html"
+  , dir "img" $ dir "figure_1_5_b.png" $ serveFile (asContentType "image/png") "img/figure_1_5_b.png"
   , homePage conn
   ]
 
@@ -48,9 +50,9 @@ template title body = toResponse $
     H.body $ do
       H.table ! A.id "nav-bar" $ do
         H.tr $ do
-          H.td $ a ! href "/" $ "home"
+          H.td $ a ! href "/"     $ "home"
           H.td $ a ! href "/form" $ "create animal"
-          H.td $ ""
+          H.td $ a ! href "/math"  $ "math"
       body
 
 insert_animal :: Connection -> String -> String -> IO (Maybe ())
@@ -127,6 +129,12 @@ echo =
     ok $ template "echo" $ do
       p $ "echo says: " >> toHtml msg
       p "Change the url to echo something else."
+
+math :: ServerPart Response
+math = do
+  ok $ template "math" $ do
+    H.div $ do
+      H.img ! A.src "img/figure_1_5_b.png" ! A.alt "geometric diagram" ! A.height "600px"
 
 css :: Html
 css =
