@@ -53,7 +53,8 @@ template title body = toResponse $
           H.td $ a ! href "/"      $ "home"
           H.td $ a ! href "/form"  $ "create animal"
           H.td $ a ! href "/math"  $ "math"
-      body
+      H.div ! A.id "body-div" $ do
+        body
 
 insert_animal :: Connection -> String -> String -> IO (Maybe ())
 insert_animal conn name species = do
