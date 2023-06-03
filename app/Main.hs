@@ -36,8 +36,8 @@ myApp conn = msum
   , dir "math"      $ math
   , dir "form"      $ formPage conn
   , dir "delete"    $ deletePage conn
-  , dir "react-app" $ serveFile (guessContentTypeM mimeTypes) "frontend/public/index.html"
-  , dir "img" $ dir "figure_1_5_b.png" $ serveFile (asContentType "image/png") "img/figure_1_5_b.png"
+  , dir "static" $ serveDirectory EnableBrowsing [] "static"
+  , dir "thing" $ path $ \s -> ok $ template "thing" $ H.h1 (H.string s)
   , homePage conn
   ]
 
@@ -45,13 +45,13 @@ template :: Text -> Html -> Response
 template title body = toResponse $
   H.html $ do
     H.head $ do
-      css
+      H.link ! A.rel "stylesheet" ! href "static/css/main.css"
       H.title . toHtml $ title
     H.body $ do
       H.table ! A.id "nav-bar" $ do
         H.tr $ do
-          H.td $ a ! href "/"     $ "home"
-          H.td $ a ! href "/form" $ "create animal"
+          H.td $ a ! href "/"      $ "home"
+          H.td $ a ! href "/form"  $ "create animal"
           H.td $ a ! href "/math"  $ "math"
       body
 
@@ -80,11 +80,14 @@ formPage conn = msum [ viewForm, processForm conn ]
         method GET
         ok $ template "create animal" $
           form ! action "/form" ! enctype "multipart/form-data" ! A.method "POST" $ do
-            label ! A.for "name" $ "name"
-            input ! type_ "text" ! A.id "name" ! name "name"
-            label ! A.for "species" $ "species"
-            input ! type_ "text" ! A.id "species" ! name "species"
-            input ! type_ "submit" ! value "Create"
+            H.div $ do
+              label ! A.for "name" $ "name"
+              input ! type_ "text" ! A.id "name" ! name "name"
+            H.div $ do
+              label ! A.for "species" $ "species"
+              input ! type_ "text" ! A.id "species" ! name "species"
+            H.div $ do
+              input ! type_ "submit" ! value "Create"
 
     processForm :: Connection -> ServerPart Response
     processForm conn = do
@@ -133,29 +136,7 @@ echo =
 math :: ServerPart Response
 math = do
   ok $ template "math" $ do
+    H.div $ "Here is a diagram"
     H.div $ do
-      H.img ! A.src "img/figure_1_5_b.png" ! A.alt "geometric diagram" ! A.height "600px"
+      H.img ! A.class_ "image" ! A.src "static/img/figure_1_5_b.png" ! A.alt "geometric diagram"
 
-css :: Html
-css =
- let s = Data.Text.concat
-      [ "body { color: #555; padding: 0; margin: 0; margin-left: 1em;}"
-      , "ul { list-style-type: none; }"
-      , "ol { list-style-type: none; }"
-      , "h1 { font-size: 1.5em; color: #555; margin: 0; }"
-      , ".author { color: #aaa; }"
-      , ".date { color: #aaa; }"
-      , ".tags { color: #aaa; }"
-      , ".post { border-bottom: 1px dotted #aaa; margin-top: 1em; }"
-      , ".bdy  { color: #555; margin-top: 1em; }"
-      , ".post-footer { margin-top: 1em; margin-bottom: 1em; }"
-      , "label { display: inline-block; width: 3em; }"
-      , "#menu { margin: 0; padding: 0; margin-left: -1em;"
-      ,         "border-bottom: 1px solid #aaa; }"
-      , "#menu li { display: inline; margin-left: 1em; }"
-      , "#menu form { display: inline; margin-left: 1em; }"
-      , "#animal-table, #animal-table th, #animal-table td { border: 1px solid #aaa; }"
-      , "td { min-width: 100px; }"
-      , "#nav-bar { background: #eee; padding: 8px; }"
-      ]
-  in H.style ! A.type_ "text/css" $ H.toHtml s

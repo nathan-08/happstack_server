@@ -1,4 +1,5 @@
-[ ] use docker
-[ ] move css/js to external files
+[x] move css/js to external files
+[x] serve static files (png)
+[x] use docker
 [x] get nginx working
 [x] upload to github

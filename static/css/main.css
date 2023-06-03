@@ -1,0 +1,14 @@
+body { color: #555; padding: 0; margin: 0; margin-left: 1em;}
+td { padding-right: 2em; }
+#animal-table, #animal-table th, #animal-table td { border: 1px solid #aaa; }
+#nav-bar { background: #eee; padding: 8px; margin-bottom: 1em; }
+form div {
+  max-width: 200px;
+  justify-content: space-between;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 1em;
+}
+.image {
+  height: 400px;
+}
