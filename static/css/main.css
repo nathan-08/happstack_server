@@ -1,3 +1,6 @@
+* {
+  font-size: 4.5vw;
+}
 #body-div {
   padding: 0 0 1em 1em;
 }
@@ -17,7 +20,7 @@ td { padding-right: 2em; }
   align-items: flex-start;
 }
 form div label {
-  width: 80px;
+  width: 20vw;
   display: inline-block;
 }
 form div {
