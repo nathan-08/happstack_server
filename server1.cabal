@@ -85,6 +85,7 @@ executable server1
                     , hsx2hs
                     , bytestring
                     , utf8-string
+                    , containers
 
     -- Directories containing source files.
     hs-source-dirs:   app

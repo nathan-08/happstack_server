@@ -3,6 +3,7 @@ module Main where
 
 import Data.Char (isSpace)
 import Data.List (dropWhileEnd)
+import Data.Map (fromList)
 import Control.Applicative ((<$>), optional)
 import Control.Monad (forM_)
 import Data.Maybe (fromMaybe)
@@ -12,32 +13,36 @@ import Data.ByteString.UTF8 (fromString)
 import Happstack.Lite
 --import Happstack.Server.FileServe.BuildingBlocks
 import Happstack.Server.Monads (require)
+import Happstack.Server.Auth (basicAuth)
 import Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value, onclick)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import Database.PostgreSQL.Simple
 
+trim :: String -> String
 trim = dropWhileEnd isSpace . dropWhile isSpace
 
 main :: IO ()
 main = do
   putStrLn "starting server"
-  connectionString <- readFile "connection_string.txt"
+  connectionString <- readFile "../connection_string.txt"
+  username <- readFile "../username.txt"
+  password <- readFile "../password.txt"
   conn <- connectPostgreSQL . fromString . trim $ connectionString
   xs <- query_ conn "select * from animals"
   forM_ xs $ \(name,spec) ->
     putStrLn $ name ++ ": " ++ spec
-  serve Nothing $ myApp conn
+  serve Nothing $ myApp conn (trim username) (trim password)
 
-myApp :: Connection -> ServerPart Response
-myApp conn = msum
+myApp :: Connection -> String -> String -> ServerPart Response
+myApp conn username password = msum
   [ dir "echo"      $ echo
-  , dir "math"      $ math
+  , dir "math"      $ basicAuth "librorumadyton.net" (fromList [(username,password)]) $ math
   , dir "form"      $ formPage conn
   , dir "delete"    $ deletePage conn
-  , dir "static" $ serveDirectory EnableBrowsing [] "static"
-  , dir "thing" $ path $ \s -> ok $ template "thing" $ H.h1 (H.string s)
+  , dir "static"    $ serveDirectory EnableBrowsing [] "../static"
+  , dir "thing"     $ path $ \s -> ok $ template "thing" $ H.h1 (H.string s)
   , homePage conn
   ]
 
