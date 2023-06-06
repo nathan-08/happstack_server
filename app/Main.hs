@@ -119,7 +119,8 @@ homePage conn =
               H.td . toHtml $ name
               H.td . toHtml $ spec
               H.td $ a ! href (H.stringValue $ "/delete?name=" ++ name ++ "&spec=" ++ spec)
-                       ! onclick (H.stringValue $ "return confirm('really delete " ++ name ++ "?')") $ "delete"
+                       ! onclick (H.stringValue $ "return confirm('really delete " ++ name ++ "?')") $
+                       H.img ! A.src "static/icon/trash_empty.png" ! A.height "40px"
 
 deletePage :: Connection -> ServerPart Response
 deletePage conn = do
